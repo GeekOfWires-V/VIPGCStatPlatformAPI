@@ -17,4 +17,8 @@
       <None Remove="Dockerfile" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\VIPGCStatPlatform.Shared\VIPGCStatPlatform.Shared.csproj" />
+    </ItemGroup>
+
 </Project>
