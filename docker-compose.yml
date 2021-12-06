@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  #API Platform Service
+  stat_platform:
+    image: mcr.microsoft.com/dotnet/runtime:6.0
+    build:
+      context: .
+      dockerfile: VIPGCStatPlatformAPI/Dockerfile
+    ports:
+      - "28080:7253"
+    expose:
+      - "7253"
+    container_name: vipgc-api
+    networks:
+      vipgc-dev-net:
+        ipv4_address: 192.168.5.3
+        aliases:
+            - vipgcapi
+  # Database Service
+  # MariaDB because better and also ARM64v8 support
+  database:
+    image: mariadb
+    container_name: mysql-db
+    ports:
+      - "23306:3306"
+    expose:
+      - "3306"
+    networks:
+      vipgc-dev-net:
+        ipv4_address: 192.168.5.2
+        aliases:
+            - mysqldb
+            - mysql-db
+            - mysqldata
+# Network for VIPGC platform
+networks:
+  vipgc-dev-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.5.0/24
+          gateway: 192.168.5.1
