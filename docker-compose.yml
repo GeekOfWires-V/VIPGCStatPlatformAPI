@@ -1,15 +1,26 @@
+# Custom Docker Compose File
+# Note, do not use this as an example for file commenting
+# as this is probably a bad example for this kind
+# of file
+# - GeekOfWires
+
 version: '3.8'
 services:
   #API Platform Service
   stat_platform:
     image: mcr.microsoft.com/dotnet/runtime:6.0
     build:
+      # Build context needs to be the solution to include required dependencies
       context: .
-      dockerfile: VIPGCStatPlatformAPI/Dockerfile
+      # Dockerfile in the Server will build the Web API and the Blazor instance and then
+      # host the instance out to the web
+      dockerfile: Server/Dockerfile
     ports:
-      - "28080:7253"
+      - "20443:443"
+      - "20080:80"
     expose:
-      - "7253"
+      - "443"
+      - "80"
     container_name: vipgc-api
     networks:
       vipgc-dev-net:
@@ -20,11 +31,15 @@ services:
   # MariaDB because better and also ARM64v8 support
   database:
     image: mariadb
-    container_name: mysql-db
+    container_name: mariadb-db
     ports:
       - "23306:3306"
     expose:
       - "3306"
+    environment:
+      - "MARIADB_USER=devdb"
+      - "MARIADB_PASSWORD=devPassword1"
+      - "MARIADB_ROOT_PASSWORD=devPassword1"
     networks:
       vipgc-dev-net:
         ipv4_address: 192.168.5.2
